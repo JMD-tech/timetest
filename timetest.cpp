@@ -110,8 +110,8 @@ int main(int argc, char** argv)
 	cout << "QPC Timer is " << QPfreq.QuadPart << " Hz" << endl;
 	//TODO: show timeBeginPeriod current setting / best setting (timeGetDevCaps)
 	cout << lpad("QPC ticks",COL_1," ") << rpad("MIN",COL_N," ") << rpad("AVG",COL_N," ") << rpad("MAX",COL_N," ") << rpad("MAX VAR",COL_N," ") << endl;
-	cout << "Testing empty routine..." << endl;
-	bench_wait("Nothing",nothing);
+	//cout << "Testing empty routine..." << endl;
+	//bench_wait("Nothing",nothing);
 	cout << "Testing " << WAIT_MS << "ms wait routines, " << N_PASS << " pass..." << endl;
 	bench_wait("WIN32 Sleep()",test_sleep);
 	bench_wait("High-res waitable timer",test_wtimer);
