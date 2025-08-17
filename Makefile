@@ -1,5 +1,5 @@
 
-CXXFLAGS=$(CXXOPTFLAGS) -O0 -Wall -std=c++14
+CXXFLAGS=$(CXXOPTFLAGS) -O3 -Wall -std=c++14
 
 LDFLAGS+= -lwinmm
 
