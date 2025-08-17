@@ -1,6 +1,6 @@
 
 #define WAIT_MS (100)
-#define N_PASS  (20)
+#define N_PASS  (50)
 
 #define COL_1	(25)
 #define COL_N	(12)
