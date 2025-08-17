@@ -44,7 +44,7 @@ void test_sleep() { Sleep(WAIT_MS); }
 void test_wtimer_lr()
 {
 	HANDLE hTimer = CreateWaitableTimerEx(NULL, NULL, 0, TIMER_ALL_ACCESS);
-	LARGE_INTEGER dueTime; 
+	LARGE_INTEGER dueTime;
 	dueTime.QuadPart = -10000 * WAIT_MS; // "in 100 nanoseconds interval", negative = relative value
 	SetWaitableTimer(hTimer, &dueTime, 0 /*once*/, NULL, NULL, FALSE);
 	WaitForSingleObject(hTimer, INFINITE);
@@ -55,10 +55,10 @@ void test_wtimer_hr()
 {
 	// Same result with 0, 1 or 16, timeBeginPeriod seems totally ignored, and no performance impact calling it
 	unsigned int per = 0;
-	if (per) timeBeginPeriod(per); 
+	if (per) timeBeginPeriod(per);
 	//TODO: handle error (waitable high resolution timer supported only from W10 1803)
 	HANDLE hTimer = CreateWaitableTimerEx(NULL, NULL, CREATE_WAITABLE_TIMER_HIGH_RESOLUTION, TIMER_ALL_ACCESS);
-	LARGE_INTEGER dueTime; 
+	LARGE_INTEGER dueTime;
 	dueTime.QuadPart = -10000 * WAIT_MS; // "in 100 nanoseconds interval", negative = relative value
 	SetWaitableTimer(hTimer, &dueTime, 0 /*once*/, NULL, NULL, FALSE);
 	WaitForSingleObject(hTimer, INFINITE);
@@ -75,8 +75,8 @@ void test_nanosleep()
 	//if (nanosleep(&ts, &ts)==-1)
 	//	cout << "nanosleep failed" << endl;
 	// No significant perf impact of the comparison and loop
-	
-	while (nanosleep(&ts, &ts) == -1) 
+
+	while (nanosleep(&ts, &ts) == -1)
 		if (errno != EINTR)
 		{
 			cout << "nanosleep failed" << endl;
@@ -110,8 +110,8 @@ void bench_wait(const char *nam, void (*func)())
 		tot+=elapsed;
 	}
 	avg = tot / N_PASS;
-	cout << lpad(nam,COL_1," ") << rpad(to_string(min),COL_N," ") 
-		<< rpad(to_string(avg),COL_N," ") << rpad(to_string(max),COL_N," ") << rpad(to_string(max - min),COL_N," ") << endl;	
+	cout << lpad(nam,COL_1," ") << rpad(to_string(min),COL_N," ")
+		<< rpad(to_string(avg),COL_N," ") << rpad(to_string(max),COL_N," ") << rpad(to_string(max - min),COL_N," ") << endl;
 }
 
 int main(int argc, char** argv)
