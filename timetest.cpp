@@ -41,7 +41,17 @@ void nothing() {}
 
 void test_sleep() { Sleep(WAIT_MS); }
 
-void test_wtimer()
+void test_wtimer_lr()
+{
+	HANDLE hTimer = CreateWaitableTimerEx(NULL, NULL, 0, TIMER_ALL_ACCESS);
+	LARGE_INTEGER dueTime; 
+	dueTime.QuadPart = -10000 * WAIT_MS; // "in 100 nanoseconds interval", negative = relative value
+	SetWaitableTimer(hTimer, &dueTime, 0 /*once*/, NULL, NULL, FALSE);
+	WaitForSingleObject(hTimer, INFINITE);
+	CloseHandle(hTimer);
+}
+
+void test_wtimer_hr()
 {
 	// Same result with 0, 1 or 16, timeBeginPeriod seems totally ignored, and no performance impact calling it
 	unsigned int per = 0;
@@ -50,7 +60,7 @@ void test_wtimer()
 	HANDLE hTimer = CreateWaitableTimerEx(NULL, NULL, CREATE_WAITABLE_TIMER_HIGH_RESOLUTION, TIMER_ALL_ACCESS);
 	LARGE_INTEGER dueTime; 
 	dueTime.QuadPart = -10000 * WAIT_MS; // "in 100 nanoseconds interval", negative = relative value
-	SetWaitableTimer(hTimer, &dueTime, 0 /*once*/, NULL, NULL, FALSE);	
+	SetWaitableTimer(hTimer, &dueTime, 0 /*once*/, NULL, NULL, FALSE);
 	WaitForSingleObject(hTimer, INFINITE);
 	CloseHandle(hTimer);
 	if (per) timeEndPeriod(per);
@@ -114,7 +124,8 @@ int main(int argc, char** argv)
 	//cout << "Testing empty routine..." << endl;
 	//bench_wait("Nothing",nothing);
 	bench_wait("WIN32 Sleep()",test_sleep);
-	bench_wait("High-res waitable timer",test_wtimer);
+	bench_wait("Norm-res waitable timer",test_wtimer_lr);
+	bench_wait("High-res waitable timer",test_wtimer_hr);
 	bench_wait("MinGW usleep()",test_usleep);
 	bench_wait("MinGW nanosleep()",test_nanosleep);
 	bench_wait("QPC busy wait",test_busywait);
