@@ -1,17 +1,18 @@
 
-#define WAIT_MS (100)
-#define N_PASS  (50)
-
 #define COL_1	(25)
 #define COL_N	(12)
 
 #include <iostream>
 #include <string>
+#include <vector>
 #include <windows.h>
 #include <winnt.h>
+#include <stdlib.h>
 #include <unistd.h>
 
-using std::string; using std::cout; using std::endl; using std::to_string;
+unsigned int WAIT_MS = 100, N_PASS = 50;
+
+using std::string; using std::cout; using std::endl; using std::to_string; using std::vector;
 
 string lpad( const string& s, unsigned int n, const string& c )
 {
@@ -45,7 +46,7 @@ void test_wtimer_lr()
 {
 	HANDLE hTimer = CreateWaitableTimerEx(NULL, NULL, 0, TIMER_ALL_ACCESS);
 	LARGE_INTEGER dueTime;
-	dueTime.QuadPart = -10000 * WAIT_MS; // "in 100 nanoseconds interval", negative = relative value
+	dueTime.QuadPart = -10000 * (LONGLONG)WAIT_MS; // "in 100 nanoseconds interval", negative = relative value
 	SetWaitableTimer(hTimer, &dueTime, 0 /*once*/, NULL, NULL, FALSE);
 	WaitForSingleObject(hTimer, INFINITE);
 	CloseHandle(hTimer);
@@ -59,7 +60,7 @@ void test_wtimer_hr()
 	//TODO: handle error (waitable high resolution timer supported only from W10 1803)
 	HANDLE hTimer = CreateWaitableTimerEx(NULL, NULL, CREATE_WAITABLE_TIMER_HIGH_RESOLUTION, TIMER_ALL_ACCESS);
 	LARGE_INTEGER dueTime;
-	dueTime.QuadPart = -10000 * WAIT_MS; // "in 100 nanoseconds interval", negative = relative value
+	dueTime.QuadPart = -10000 * (LONGLONG)WAIT_MS; // "in 100 nanoseconds interval", negative = relative value
 	SetWaitableTimer(hTimer, &dueTime, 0 /*once*/, NULL, NULL, FALSE);
 	WaitForSingleObject(hTimer, INFINITE);
 	CloseHandle(hTimer);
@@ -100,7 +101,7 @@ void test_busywait()
 void bench_wait(const char *nam, void (*func)())
 {
 	LONGLONG min=0,max=0,tot=0,avg;
-	for (int pass = 0; pass < N_PASS ;++pass)
+	for (unsigned int pass = 0; pass < N_PASS ;++pass)
 	{
 		LONGLONG tbefore = ticks();
 		func();
@@ -116,6 +117,28 @@ void bench_wait(const char *nam, void (*func)())
 
 int main(int argc, char** argv)
 {
+	vector<string> args(argv + 1, argv + argc);
+	if (args.size())
+	{
+		int tmp = atoi(args[0].c_str());
+		if (!tmp)
+		{
+			cout << args[0] << " : Invalid value for WAIT_MS" << endl;
+			return 1;
+		}
+		WAIT_MS = tmp;
+		if (args.size()>1)
+		{
+			tmp = atoi(args[1].c_str());
+			if (!tmp)
+			{
+				cout << args[1] << " : Invalid value for N_PASS" << endl;
+				return 1;
+			}
+			N_PASS = tmp;
+		}
+	}
+	
 	QueryPerformanceFrequency(&QPfreq);
 	cout << "QPC Timer is " << QPfreq.QuadPart << " Hz" << endl;
 	//TODO: show timeBeginPeriod current setting / best setting (timeGetDevCaps)
