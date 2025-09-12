@@ -140,7 +140,7 @@ int main(int argc, char** argv)
 	}
 	
 	QueryPerformanceFrequency(&QPfreq);
-	cout << "QPC Timer is " << QPfreq.QuadPart << " Hz" << endl;
+	cout << "QPC Timer is " << QPfreq.QuadPart << " Hz, " << 1000000000L / QPfreq.QuadPart << " ns tick" << endl;
 	//TODO: show timeBeginPeriod current setting / best setting (timeGetDevCaps)
 	cout << "### TEST OF " << N_PASS << " x " << WAIT_MS << " ms wait routine runs" << endl;
 	cout << lpad("QPC ticks",COL_1," ") << rpad("MIN",COL_N," ") << rpad("AVG",COL_N," ") << rpad("MAX",COL_N," ") << rpad("MAX VAR",COL_N," ") << endl;
