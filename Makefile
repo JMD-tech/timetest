@@ -1,7 +1,7 @@
 
 CXXFLAGS=$(CXXOPTFLAGS) -O3 -Wall -std=c++14
 
-LDFLAGS+= -lwinmm
+LDFLAGS+= -lwinmm -static
 
 PROGNAME=timetest
 
