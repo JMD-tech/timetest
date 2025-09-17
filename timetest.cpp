@@ -67,11 +67,32 @@ void test_wtimer_hr()
 	if (per) timeEndPeriod(per);
 }
 
+#define UNDERSHOOT_US (1000)
+
+void test_wtimer_hr_plus_busywait()
+{
+	LONGLONG etime = ticks() + (((LONGLONG)WAIT_MS * QPfreq.QuadPart) / 1000L);
+
+	if ((LONGLONG)WAIT_MS * 1000L > (LONGLONG)UNDERSHOOT_US)
+	{
+		// Do a timer wait with slight undershoot
+		HANDLE hTimer = CreateWaitableTimerEx(NULL, NULL, CREATE_WAITABLE_TIMER_HIGH_RESOLUTION, TIMER_ALL_ACCESS);
+		LARGE_INTEGER dueTime;
+		dueTime.QuadPart = -10000 * (LONGLONG)WAIT_MS + 10 * (LONGLONG)UNDERSHOOT_US; // "in 100 nanoseconds interval", negative = relative value
+		SetWaitableTimer(hTimer, &dueTime, 0 /*once*/, NULL, NULL, FALSE);
+		WaitForSingleObject(hTimer, INFINITE);
+		CloseHandle(hTimer);
+	}
+
+	// Then finish waiting in busy wait
+	while (ticks()<etime) {}
+}
+
 void test_nanosleep()
 {
 	timespec ts;
 	ts.tv_sec = 0;
-	ts.tv_nsec = 1000000 * WAIT_MS;
+	ts.tv_nsec = 1000000L * (LONGLONG)WAIT_MS;
 
 	//if (nanosleep(&ts, &ts)==-1)
 	//	cout << "nanosleep failed" << endl;
@@ -88,7 +109,7 @@ void test_nanosleep()
 void test_usleep()
 {
 	// Should check with some signals disabled, or exclude failed samples from stat data, but didn't happen so...
-	if (usleep(1000 * WAIT_MS)==-1)
+	if (usleep(1000L * (LONGLONG)WAIT_MS)==-1)
 		cout << "usleep() failed." << endl;
 }
 
@@ -152,6 +173,7 @@ int main(int argc, char** argv)
 	bench_wait("MinGW usleep()",test_usleep);
 	bench_wait("MinGW nanosleep()",test_nanosleep);
 	bench_wait("QPC busy wait",test_busywait);
+	bench_wait("HR wait timer + busywait",test_wtimer_hr_plus_busywait);
 	return 0;
 }
 
