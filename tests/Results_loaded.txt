@@ -1,0 +1,190 @@
+
+
+### TEST OF 500 x 10 ms wait routine runs
+
+Idle:
+
+QPC ticks                         MIN         AVG         MAX     MAX VAR
+WIN32 Sleep()                  100373      104516      115925       15552
+Norm-res waitable timer        100157      104071      108764        8607
+High-res waitable timer        101124      103891      107550        6426
+MinGW usleep()                 100678      104792      117471       16793
+MinGW nanosleep()               99842      156261      219730      119888
+QPC busy wait                  100000      100000      100010          10
+
+100% load @below priority:
+
+QPC ticks                         MIN         AVG         MAX     MAX VAR
+WIN32 Sleep()                  101743      103121      115669       13926
+Norm-res waitable timer         98090      102995      103748        5658
+High-res waitable timer        102310      103470      108199        5889
+MinGW usleep()                 100516      103233      113043       12527
+MinGW nanosleep()               98401      156086      226591      128190
+QPC busy wait                  100000      100021      106459        6459
+
+100% load @normal priority:
+
+QPC ticks                         MIN         AVG         MAX     MAX VAR
+WIN32 Sleep()                  100475      131497      276883      176408
+Norm-res waitable timer         92627      128924      250732      158105
+High-res waitable timer        100937      132208      291933      190996
+MinGW usleep()                 100478      123603      320639      220161
+MinGW nanosleep()               96850      163773      369418      272568
+QPC busy wait                  100000      104427      259579      159579
+
+QPC ticks                         MIN         AVG         MAX     MAX VAR
+WIN32 Sleep()                  100608      103318      111344       10736
+Norm-res waitable timer        100524      103368      114981       14457
+High-res waitable timer        100614      103633      105472        4858
+MinGW usleep()                 100760      109414      244795      144035
+MinGW nanosleep()               96308      161775      348599      252291
+QPC busy wait                  100000      104565      246316      146316
+
+QPC ticks                         MIN         AVG         MAX     MAX VAR
+WIN32 Sleep()                  100168      110419      168773       68605
+Norm-res waitable timer         90695      106789      149962       59267
+High-res waitable timer        100460      111572      173619       73159
+MinGW usleep()                 100236      110296      165553       65317
+MinGW nanosleep()               90968      156022      266629      175661
+QPC busy wait                  100000      100403      118940       18940
+
+100% load @above priority:
+
+QPC ticks                         MIN         AVG         MAX     MAX VAR
+WIN32 Sleep()                  100354      103443      105234        4880
+Norm-res waitable timer         97151      103434      109890       12739
+High-res waitable timer        102986      103832      106956        3970
+MinGW usleep()                 101021      103579      118140       17119
+MinGW nanosleep()               97347      161019     2649346     2551999
+QPC busy wait                  100000      836487     6040170     5940170
+
+=> WTF??? 
+Yes, those last are repeatable results, only W32 Sleep varied somewhat significantly (up to 12000 max var) between runs,
+and nanosleep and busy wait too but always in this order of magnitude: 2.5 to 4.2 Mticks for nanosleep, 5.9 to 8.3 for busy wait.
+
+same with load on 7 out of 8 CPU threads:
+
+QPC ticks                         MIN         AVG         MAX     MAX VAR
+WIN32 Sleep()                  100378      104534      148809       48431
+Norm-res waitable timer         95730      103865      160977       65247
+High-res waitable timer        100597      104227      142295       41698
+MinGW usleep()                 100647      103977      140733       40086
+MinGW nanosleep()               96883      159729     1837119     1740236
+QPC busy wait                  100001      103808     1656606     1556605
+
+QPC ticks                         MIN         AVG         MAX     MAX VAR
+WIN32 Sleep()                  100265      103862      117702       17437
+Norm-res waitable timer         91408      103379      114482       23074
+High-res waitable timer        100785      103824      117643       16858
+MinGW usleep()                 100497      103915      121182       20685
+MinGW nanosleep()               94026      168936     1449443     1355417
+QPC busy wait                  100001      100949      177484       77483
+
+QPC ticks                         MIN         AVG         MAX     MAX VAR
+WIN32 Sleep()                  100389      103901      119041       18652
+Norm-res waitable timer         94391      103451      117405       23014
+High-res waitable timer        100989      104022      117895       16906
+MinGW usleep()                 100359      103968      125250       24891
+MinGW nanosleep()               94279      166673     1103762     1009483
+QPC busy wait                  100000      100769      161122       61122
+
+with only 6 out of 8 threads loaded
+
+QPC ticks                         MIN         AVG         MAX     MAX VAR
+WIN32 Sleep()                  101357      104385      149933       48576
+Norm-res waitable timer         93189      105160      344950      251761
+High-res waitable timer        101363      104852      353784      252421
+MinGW usleep()                 101291      105552      359439      258148
+MinGW nanosleep()               94660      156719      371952      277292
+QPC busy wait                  100000      100049      116609       16609
+
+QPC ticks                         MIN         AVG         MAX     MAX VAR
+WIN32 Sleep()                  100841      103500      113548       12707
+Norm-res waitable timer         94519      103329      112324       17805
+High-res waitable timer        100731      103751      111657       10926
+MinGW usleep()                 101262      103988      160015       58753
+MinGW nanosleep()               95199      156624      347344      252145
+QPC busy wait                  100001      100004      100560         559
+
+load on 4 threads:
+
+QPC ticks                         MIN         AVG         MAX     MAX VAR
+WIN32 Sleep()                  100414      104326      114822       14408
+Norm-res waitable timer         99603      104691      114944       15341
+High-res waitable timer        100778      103805      110296        9518
+MinGW usleep()                 100337      104948      115214       14877
+MinGW nanosleep()               99619      156266      214543      114924
+QPC busy wait                  100000      100003      100139         139
+
+QPC ticks                         MIN         AVG         MAX     MAX VAR
+WIN32 Sleep()                  101102      104613      115161       14059
+Norm-res waitable timer         98162      104450      110788       12626
+High-res waitable timer        100528      104067      110331        9803
+MinGW usleep()                 100500      104914      116509       16009
+MinGW nanosleep()               98228      156311      222414      124186
+QPC busy wait                  100000      100004      100333         333
+
+on 3 threads: (at least 1 CPU core Idle)
+
+QPC ticks                         MIN         AVG         MAX     MAX VAR
+WIN32 Sleep()                  101806      103360      113200       11394
+Norm-res waitable timer         96692      103307      108664       11972
+High-res waitable timer        101091      103590      106121        5030
+MinGW usleep()                 101839      103350      113105       11266
+MinGW nanosleep()              101900      156396      217396      115496
+QPC busy wait                  100000      100002      100083          83
+
+QPC ticks                         MIN         AVG         MAX     MAX VAR
+WIN32 Sleep()                  102175      103417      113979       11804
+Norm-res waitable timer         95480      103330      114201       18721
+High-res waitable timer        102366      103623      105393        3027
+MinGW usleep()                 101928      103365      114710       12782
+MinGW nanosleep()              102171      156024      221187      119016
+QPC busy wait                  100000      100003      100033          33
+
+
+
+
+### TEST OF 50 x 100 ms wait routine runs
+
+Idle:
+
+QPC ticks                         MIN         AVG         MAX     MAX VAR
+WIN32 Sleep()                 1000981     1006229     1015160       14179
+Norm-res waitable timer        993383     1005428     1015407       22024
+High-res waitable timer       1001650     1005367     1008470        6820
+MinGW usleep()                1000578     1005717     1012612       12034
+MinGW nanosleep()             1061858     1092822     1155071       93213
+QPC busy wait                 1000000     1000002     1000022          22
+
+100% load @below priority:
+
+QPC ticks                         MIN         AVG         MAX     MAX VAR
+WIN32 Sleep()                 1000393     1004418     1013786       13393
+Norm-res waitable timer        998569     1003374     1010851       12282
+High-res waitable timer       1000441     1001422     1006404        5963
+MinGW usleep()                1000250     1003129     1010600       10350
+MinGW nanosleep()             1066146     1094726     1159764       93618
+QPC busy wait                 1000002     1000005     1000010           8
+
+100% load @normal priority:
+
+QPC ticks                         MIN         AVG         MAX     MAX VAR
+WIN32 Sleep()                 1001936     1022089     1112071      110135
+Norm-res waitable timer        992763     1024901     1087580       94817
+High-res waitable timer       1001722     1030984     1096112       94390
+MinGW usleep()                1002149     1025178     1129000      126851
+MinGW nanosleep()             1003492     1092240     1198446      194954
+QPC busy wait                 1000004     1008275     1110839      110835
+
+100% load @above priority:
+
+QPC ticks                         MIN         AVG         MAX     MAX VAR
+WIN32 Sleep()                 1000862     1004749     1011066       10204
+Norm-res waitable timer        999701     1005190     1015097       15396
+High-res waitable timer       1000406     1002707     1005581        5175
+MinGW usleep()                1000213     1006724     1015374       15161
+MinGW nanosleep()             1064644     1094358     1156778       92134
+QPC busy wait                 2222322     2974586     5042777     2820455
+
+

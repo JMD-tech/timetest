@@ -1,0 +1,52 @@
+Battery powered:
+
+### TEST OF 20 x 100 ms wait routine runs
+QPC ticks                         MIN         AVG         MAX     MAX VAR
+WIN32 Sleep()                 1000610     1006880     1016209       15599
+High-res waitable timer       1001892     1005674     1015383       13491
+MinGW usleep()                1000908     1005943     1017368       16460
+MinGW nanosleep()             1061819     1091600     1145352       83533
+QPC busy wait                 1000001     1000002     1000006           5
+
+Put back on AC power:
+
+### TEST OF 20 x 100 ms wait routine runs
+QPC ticks                         MIN         AVG         MAX     MAX VAR
+WIN32 Sleep()                 1002226     1006825     1014328       12102
+High-res waitable timer       1002956     1005266     1008537        5581
+MinGW usleep()                1001471     1006813     1011433        9962
+MinGW nanosleep()             1011798     1088350     1137803      126005
+QPC busy wait                 1000000     1000002     1000006           6
+
+Battery again:
+
+### TEST OF 20 x 100 ms wait routine runs
+QPC ticks                         MIN         AVG         MAX     MAX VAR
+WIN32 Sleep()                 1001436     1007101     1021529       20093
+High-res waitable timer       1002242     1005221     1008286        6044
+MinGW usleep()                1000342     1006245     1013514       13172
+MinGW nanosleep()             1063839     1091102     1142842       79003
+QPC busy wait                 1000001     1000035     1000635         634
+
+AC power again:
+
+### TEST OF 20 x 100 ms wait routine runs
+QPC ticks                         MIN         AVG         MAX     MAX VAR
+WIN32 Sleep()                 1002095     1007579     1013910       11815
+High-res waitable timer       1003160     1005415     1007716        4556
+MinGW usleep()                1001149     1006206     1013783       12634
+MinGW nanosleep()              997814     1088690     1158521      160707
+QPC busy wait                 1000000     1000001     1000005           5
+
+
+Battery power with timeBeginPeriod(1):
+
+### TEST OF 20 x 100 ms wait routine runs
+QPC ticks                         MIN         AVG         MAX     MAX VAR
+WIN32 Sleep()                 1000838     1007700     1016498       15660
+High-res waitable timer       1001684     1004794     1010315        8631
+MinGW usleep()                1000455     1006231     1010978       10523
+MinGW nanosleep()             1067423     1094160     1157291       89868
+QPC busy wait                 1000000     1000002     1000008           8
+
+
